@@ -1,0 +1,51 @@
+=======
+INSTALL
+=======
+
+:Author: Marc-Aurèle DARCHE
+:Revision: $Id$
+
+
+
+http://httpd.apache.org/docs/2.2/mod/mod_proxy_balancer.html
+
+
+Installing the necessary modules::
+
+  $ sudo a2enmod rewrite
+  Module rewrite installed; run /etc/init.d/apache2 force-reload to enable.
+
+  $ sudo a2enmod proxy
+  Module proxy installed; run /etc/init.d/apache2 force-reload to enable.
+
+  $ sudo a2enmod proxy_http
+  Enabling proxy as a dependency
+  Module proxy is already enabled!
+  Module proxy_http installed; run /etc/init.d/apache2 force-reload to enable.
+
+  $ sudo a2enmod proxy_balancer
+  Enabling proxy as a dependency
+  Module proxy is already enabled!
+  Module proxy_balancer installed; run /etc/init.d/apache2 force-reload to enable.
+
+
+Apache configuration::
+
+  <Proxy balancer://cluster>
+    # Zope puts double quotes around cookie content,
+    # and mod_proxy_balancer's parser ain't too smart,
+    # hence the route for "joeuser.route" is 'route"'
+    BalancerMember http://localhost:9080 route=zc0"
+    BalancerMember http://localhost:9081 route=zc1"
+    BalancerMember http://localhost:9082 route=zc2"
+    BalancerMember http://localhost:9083 route=zc3"
+  </Proxy>
+
+  RewriteRule ^/(.*)
+  balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 lbmethod=bytraffic stickysession=BALANCEID timeout=1 [P,L]
+
+
+.. Local Variables:
+.. mode: rst
+.. End:
+.. vim: set filetype=rst:

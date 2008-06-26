@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:cps="http://namespaces.nuxeo.org/cps"
+    xmlns:five="http://namespaces.zope.org/five">
+
+  <subscriber
+    for="Products.CPSApacheProxyBalancer.interfaces.ICpsAffinityTool
+    zope.app.container.interfaces.IObjectAddedEvent"
+    handler="Products.CPSApacheProxyBalancer.affinity.registerHook"
+    />
+
+  <subscriber
+    for="Products.CPSApacheProxyBalancer.interfaces.ICpsAffinityTool
+    zope.app.container.interfaces.IObjectRemovedEvent"
+    handler="Products.CPSApacheProxyBalancer.affinity.unregisterHook"
+    />
+
+</configure>

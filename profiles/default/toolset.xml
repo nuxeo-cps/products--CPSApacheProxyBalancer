@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<tool-setup>
+
+ <required tool_id="portal_affinity"
+           class="Products.CPSApacheProxyBalancer.affinity.AffinityTool"/>
+
+</tool-setup>

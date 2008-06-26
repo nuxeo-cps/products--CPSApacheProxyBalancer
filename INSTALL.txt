@@ -42,7 +42,7 @@ Apache configuration::
   </Proxy>
 
   RewriteRule ^/(.*)
-  balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 lbmethod=bytraffic stickysession=BALANCEID timeout=1 [P,L]
+  balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 stickysession=BALANCEID [P,L]
 
 
 .. Local Variables:

@@ -1,4 +1,24 @@
 ===========================================================
+Package: CPSApacheProxyBalancer 0.1.1
+===========================================================
+First release built by: madarche at: 2008-06-27T16:54:21
+SVN Tag: https://svn.nuxeo.org/pub/CPS3/products/CPSApacheProxyBalancer/tags/0.1.1
+Build from: https://svn.nuxeo.org/pub/CPS3/products/CPSApacheProxyBalancer/trunk@52892
+
+Requires
+~~~~~~~~
+-
+New features
+~~~~~~~~~~~~
+-
+Bug fixes
+~~~~~~~~~
+- Fixed RewriteRule (was lacking a "cps") and there was an unwanted line return.
+New internal features
+~~~~~~~~~~~~~~~~~~~~~
+- 
+
+===========================================================
 Package: CPSApacheProxyBalancer 0.1.0
 ===========================================================
 First release built by: madarche at: 2008-06-27T14:54:17

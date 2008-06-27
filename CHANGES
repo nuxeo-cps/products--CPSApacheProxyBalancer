@@ -6,7 +6,7 @@ New features
 -
 Bug fixes
 ~~~~~~~~~
-- Fixed RewriteRule (was lacking a "cps") and there was an unwanted line return.
+-
 New internal features
 ~~~~~~~~~~~~~~~~~~~~~
 - 

@@ -2,8 +2,12 @@
 INSTALL
 =======
 
-:Author: M.-A. Darche
+:Authors: - M.-A. Darche <madarche@nuxeo.com>
+          - Georges Racinet
 :Revision: $Id$
+
+.. sectnum::    :depth: 4
+.. contents::   :depth: 4
 
 
 Introduction

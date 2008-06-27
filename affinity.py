@@ -1,5 +1,6 @@
 # (C) Copyright 2008 Nuxeo SAS <http://nuxeo.com>
 # Authors:
+# G. Racinet <gracinet@nuxeo.com>
 # M.-A. Darche <madarche@nuxeo.com>
 #
 # This program is free software; you can redistribute it and/or modify

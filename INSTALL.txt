@@ -2,15 +2,30 @@
 INSTALL
 =======
 
-:Author: Marc-Aurèle DARCHE
+:Author: M.-A. Darche
 :Revision: $Id$
 
 
+Introduction
+============
 
-http://httpd.apache.org/docs/2.2/mod/mod_proxy_balancer.html
+The installation has to be done on two sides: the CPS side and the Apache side.
 
 
-Installing the necessary modules::
+Installation on the CPS side
+============================
+
+Add the `CPSApacheProxyBalancer` product to your Zope Products directory
+and then restart all the Zope instances part of the ZEO cluster.
+
+Then you just need to import the `CPS Apache Proxy Balancer` profile in the
+`portal_setup` tool.
+
+
+Installing the Apache modules
+=============================
+
+Commands to install the necessary modules::
 
   $ sudo a2enmod rewrite
   Module rewrite installed; run /etc/init.d/apache2 force-reload to enable.
@@ -29,20 +44,101 @@ Installing the necessary modules::
   Module proxy_balancer installed; run /etc/init.d/apache2 force-reload to enable.
 
 
+Apache configuration
+====================
+
+All the details for the Apache configuration are to be found on the following addresses:
+
+- http://httpd.apache.org/docs/2.2/mod/mod_proxy_balancer.html
+- http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
+
 Apache configuration::
 
-  <Proxy balancer://cluster>
-    # Zope puts double quotes around cookie content,
-    # and mod_proxy_balancer's parser ain't too smart,
-    # hence the route for "joeuser.route" is 'route"'
-    BalancerMember http://localhost:9080 route=zc0"
-    BalancerMember http://localhost:9081 route=zc1"
-    BalancerMember http://localhost:9082 route=zc2"
-    BalancerMember http://localhost:9083 route=zc3"
-  </Proxy>
+  <VirtualHost 192.168.2.20:80>
+    ServerName www.mysite.net
 
-  RewriteRule ^/(.*)
-  balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 stickysession=BALANCEID [P,L]
+    RewriteEngine on
+
+    <Proxy balancer://cluster>
+      # Zope puts double quotes around cookie content,
+      # and mod_proxy_balancer's parser isn't too smart and reads up to
+      # the first "." (included) it finds and keeps the rest.
+      # So the route for "joeuser.route" is route" (note the only one and final ").
+      # And route is composed with the hostname and the directory name of the
+      # concerned Zope instances.
+      BalancerMember http://localhost:9080 route=www.mysite.net.zc0"
+      BalancerMember http://localhost:9081 route=www.mysite.net.zc1"
+      BalancerMember http://localhost:9082 route=www.mysite.net.zc2"
+      BalancerMember http://localhost:9083 route=www.mysite.net.zc3"
+      ProxySet stickysession=BALANCEID
+    </Proxy>
+
+    RewriteRule ^/(.*)
+    balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 [P,L]
+
+  </VirtualHost>
+
+In the code above you need to replace the values `zc0`, `zc1`, `zc2`, `zc3`, by
+the directory names of your Zope instances. In this example the Zope instances
+are located as follows::
+
+  /home/zope/zc0
+  /home/zope/zc1
+  /home/zope/zc2
+  /home/zope/zc3
+
+And for example, for a different layout such as::
+
+  /var/lib/zope/zeo/1
+  /var/lib/zope/zeo/2
+  /var/lib/zope/zeo/3
+  /var/lib/zope/zeo/4
+
+the routes would be::
+
+  route=www.mysite.net.1"
+  route=www.mysite.net.2"
+  route=www.mysite.net.3"
+  route=www.mysite.net.4"
+
+
+How to debug
+============
+
+To test and debug your setup, set the `LogLevel` for the Apache virtual host to
+a helpful verbosity.
+
+Also set the `timeout` parameter of the Proxy to a small value, for example
+10 seconds.
+
+Apache debug configuration::
+
+  <VirtualHost 192.168.2.20:80>
+    ServerName www.mysite.net
+
+    LogLevel debug
+
+    RewriteEngine on
+
+    <Proxy balancer://cluster>
+      # Zope puts double quotes around cookie content,
+      # and mod_proxy_balancer's parser isn't too smart and reads up to
+      # the first "." (included) it finds and keeps the rest.
+      # So the route for "joeuser.route" is route" (note the only one and final ").
+      # And route is composed with the hostname and the directory name of the
+      # concerned Zope instances.
+      BalancerMember http://localhost:9080 route=www.mysite.net.zc0"
+      BalancerMember http://localhost:9081 route=www.mysite.net.zc1"
+      BalancerMember http://localhost:9082 route=www.mysite.net.zc2"
+      BalancerMember http://localhost:9083 route=www.mysite.net.zc3"
+      ProxySet stickysession=BALANCEID timeout=10
+    </Proxy>
+
+    RewriteRule ^/(.*)
+    balancer://cluster/VirtualHostBase/http/%{HTTP_HOST}:80/VirtualHostRoot/$1 [P,L]
+
+  </VirtualHost>
+
 
 
 .. Local Variables:

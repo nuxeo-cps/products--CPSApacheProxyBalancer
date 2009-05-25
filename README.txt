@@ -1,5 +1,5 @@
 =======
-INSTALL
+README
 =======
 
 :Author: M.-A. Darche

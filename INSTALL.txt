@@ -81,6 +81,9 @@ Apache configuration::
 
   </VirtualHost>
 
+Routes
+------
+
 In the code above you need to replace the values `zc0`, `zc1`, `zc2`, `zc3`, by
 the directory names of your Zope instances. In this example the Zope instances
 are located as follows::
@@ -103,6 +106,33 @@ the routes would be::
   route=www.mysite.net.2"
   route=www.mysite.net.3"
   route=www.mysite.net.4"
+
+Hostname and several hosts
+--------------------------
+
+On the other hand, the 'www.mysite.net' part is the hostname of the
+server the ZEO client runs on, as obtained, e.g., by the UNIX command
+'hostname'.
+
+In the above example, they were all running on the same
+machine, which is a common setup on multiprocessor machines.
+
+Now assume that you have two servers, whose hostnames are
+'app1.mysite.net' and 'app2.mysite.net', each one hosting two ZEO
+clients with the following layout::
+
+  /var/lib/zope/zeo/zc0			(port 9080)
+  /var/lib/zope/zeo/zc1			(port 9081)
+
+then the balancer members section would be::
+
+  BalancerMember http://app1:9080 route=app1.mysite.net.zc0"
+  BalancerMember http://app1:9081 route=app1.mysite.net.zc1"
+  BalancerMember http://app2:9080 route=app2.mysite.net.zc0"
+  BalancerMember http://app2:9081 route=app2.mysite.net.zc1"
+
+assuming of course that your system resolves 'app1' and 'app2' to their IP
+adresses correctly.
 
 
 How to debug

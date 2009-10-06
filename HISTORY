@@ -1,4 +1,24 @@
 ===========================================================
+Package: CPSApacheProxyBalancer 0.1.2
+===========================================================
+First release built by: gracinet at: 2009-10-06T21:20:39
+SVN Tag: https://svn.nuxeo.org/pub/CPS3/products/CPSApacheProxyBalancer/tags/0.1.2
+Build from: https://svn.nuxeo.org/pub/CPS3/products/CPSApacheProxyBalancer/trunk@53866
+
+Requires
+~~~~~~~~
+-
+New features
+~~~~~~~~~~~~
+-
+Bug fixes
+~~~~~~~~~
+- Doc enhancement
+New internal features
+~~~~~~~~~~~~~~~~~~~~~
+- 
+
+===========================================================
 Package: CPSApacheProxyBalancer 0.1.1
 ===========================================================
 First release built by: madarche at: 2008-06-27T16:54:21

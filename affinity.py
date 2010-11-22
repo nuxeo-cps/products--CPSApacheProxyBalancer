@@ -39,8 +39,7 @@ from Products.CMFCore.utils import getToolByName, UniqueObject
 
 from interfaces import ICpsAffinityTool
 
-LOG_KEY = 'CPSApacheProxyBalancer.affinity'
-logger = logging.getLogger(LOG_KEY)
+logger = logging.getLogger(__name__)
 
 # The ID of the cookie that is used by Apache Module mod_proxy_balancer
 COOKIE_ID = 'BALANCEID'
@@ -61,21 +60,17 @@ class AffinityTool(UniqueObject, Folder):
         # This method is called by the before traverse hook to register in turn
         # a post traverse hook.
 
-        log_key = LOG_KEY + '.__call__'
-        logger = logging.getLogger(log_key)
-        logger.debug("...")
+        logger.debug('__call__')
 
         # Using the post traverse hook
         request.post_traverse(*[self.registerCallBack, (container, request)])
 
     def registerCallBack(self, container, request):
         # This method is called by post traverse hook
-        log_key = LOG_KEY + '.registerCallBack'
         logger = logging.getLogger(log_key)
-        logger.debug("...")
         mtool = getToolByName(self, 'portal_membership')
         if mtool.isAnonymousUser():
-            logger.debug("User is anonymous, quitting")
+            logger.debug("registerCallback: User is anonymous, quitting")
             return
         username = mtool.getAuthenticatedMember().getUserName();
         logger.debug("username = %s" % username)
@@ -85,15 +80,9 @@ class AffinityTool(UniqueObject, Folder):
     def setStickySession(self, REQUEST, username):
         """.
         """
-        log_key = LOG_KEY + '.setStickySession'
-        logger = logging.getLogger(log_key)
-        logger.debug("...")
-
         existing = REQUEST.cookies.get(COOKIE_ID)
-        logger.debug("existing = %s" % existing)
-
         toset = self._computeStickySession(username)
-        logger.debug("toset = %s" % toset)
+        logger.debug("setStickySession existing=%r toset=%r", existing, toset)
 
         if existing != toset:
             # Using relatively short lived cookies has the benefit
@@ -105,18 +94,13 @@ class AffinityTool(UniqueObject, Folder):
     def expireStickySession(self, REQUEST):
         """.
         """
-        log_key = LOG_KEY + '.expireStickySession'
-        logger = logging.getLogger(log_key)
-        logger.debug("...")
-
+        logger.debug("expireStickySession")
         REQUEST.RESPONSE.expireCookie(COOKIE_ID, path='/')
 
     def _computeStickySession(self, username):
         """.
         """
-        log_key = LOG_KEY + '._computeStickySession'
-        logger = logging.getLogger(log_key)
-        logger.debug("INSTANCE_HOME = %s" % INSTANCE_HOME)
+        logger.debug("_computeStickySession INSTANCE_HOME = %s", INSTANCE_HOME)
 
         # For example if INSTANCE_HOME is "/home/zope/zc0",
         # then os.path.split(INSTANCE_HOME)[-1] would be "zc0".
@@ -128,21 +112,19 @@ InitializeClass(AffinityTool)
 
 
 def registerHook(ob, event):
-    logger.debug("...")
     tool_id = event.newName
     handle = ob.meta_type + '/' + tool_id
     container = aq_inner(aq_parent(ob))
     nc = BeforeTraverse.NameCaller(tool_id)
-    logger.debug("handle = %s, container = %s, nc = %s" % (handle, container, nc))
+    logger.debug("handle=%r, container=%r, nc=%r", handle, container, nc)
     BeforeTraverse.registerBeforeTraverse(container, nc, handle)
     logger.debug("Registered BeforeTraverse hook")
 
 def unregisterHook(ob, event):
-    logger.debug("...")
     tool_id = event.oldName
     handle = ob.meta_type + '/' + tool_id
     container = aq_inner(aq_parent(ob))
-    logger.debug("handle = %s, container = %s" % (handle, container))
+    logger.debug("handle=%r, container=%r", handle, container)
     BeforeTraverse.unregisterBeforeTraverse(container, handle)
     logger.debug("Unregistered BeforeTraverse hook")
 
@@ -155,6 +137,3 @@ def manage_addTool(self, id, auth_type, REQUEST=None):
     self._setObject(id, ob)
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
-
-
-

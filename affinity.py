@@ -67,7 +67,7 @@ class AffinityTool(UniqueObject, Folder):
 
     def registerCallBack(self, container, request):
         # This method is called by post traverse hook
-        logger = logging.getLogger(log_key)
+        logger = logging.getLogger()
         mtool = getToolByName(self, 'portal_membership')
         if mtool.isAnonymousUser():
             logger.debug("registerCallback: User is anonymous, quitting")
